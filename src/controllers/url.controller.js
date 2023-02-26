@@ -17,3 +17,18 @@ export const createShorten = async (req, res) => {
         console.log(error);
     }
 }
+
+export const getUrl = async (req, res) => {
+    const { id } = req.params
+    try {
+        const short = await db.query('SELECT * FROM shorten WHERE id = $1', [id])
+        if (short.rowCount > 0){
+            const { id, shortUrl, url } = short.rows[0]
+            return res.send({id, shortUrl, url})
+        } else {
+            return res.status(404).send()
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
