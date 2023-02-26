@@ -44,3 +44,22 @@ export const useShorten = async (req, res) => {
         console.log(error);
     }
 }
+
+export const deleteShorten = async (req, res) => {
+    const { user_id } = res.locals.token
+    const { id } = req.params
+    try {
+        const shortenSave = await db.query('SELECT * FROM shorten WHERE id = $1', [id])
+        if (shortenSave.rowCount === 0){
+            return res.status(404).send()
+        }
+        const shorten = shortenSave.rows[0]
+        if (user_id !== shorten.user_id){
+            return res.status(401).send()
+        }
+        await db.query('DELETE FROM shorten WHERE id = $1', [id])
+        return res.status(204).send()
+    } catch (error) {
+        console.log(error);
+    }
+}
