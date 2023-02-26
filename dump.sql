@@ -21,6 +21,38 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: shorten; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.shorten (
+    id integer NOT NULL,
+    "shortUrl" text NOT NULL,
+    url text NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: shorten_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.shorten_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: shorten_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.shorten_id_seq OWNED BY public.shorten.id;
+
+
+--
 -- Name: token_validation; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -87,6 +119,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: shorten id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shorten ALTER COLUMN id SET DEFAULT nextval('public.shorten_id_seq'::regclass);
+
+
+--
 -- Name: token_validation id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -98,6 +137,12 @@ ALTER TABLE ONLY public.token_validation ALTER COLUMN id SET DEFAULT nextval('pu
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: shorten; Type: TABLE DATA; Schema: public; Owner: -
+--
+
 
 
 --
@@ -113,6 +158,13 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- Name: shorten_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.shorten_id_seq', 1, false);
+
+
+--
 -- Name: token_validation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
@@ -124,6 +176,14 @@ SELECT pg_catalog.setval('public.token_validation_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: shorten shorten_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.shorten
+    ADD CONSTRAINT shorten_pkey PRIMARY KEY (id);
 
 
 --

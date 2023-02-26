@@ -1,5 +1,22 @@
-import { signinSchemma, signupSchemma } from '../schemas/auth.schemas.js'
+import { signinSchemma, signupSchemma } from '../schemas/auth.schemmas.js'
 import db from '../config/database.config.js'
+
+export const userAccessValidation = async (req, res, next) => {
+    const { authorization } = req.headers
+    let token;
+    try {
+        token = authorization.replace('Bearer ', '')
+        const tokenValidation = await db.query('SELECT * FROM token_validation WHERE token LIKE $1 AND expiration_date > now()', [token])
+        if (tokenValidation.rowCount === 0){
+            return res.status(401).send()    
+        }
+        const newDateExpiration = new Date(new Date().getTime() + (30 * 60000))
+        await db.query('UPDATE token_validation SET expiration_date = $1 WHERE id = $2', [newDateExpiration, tokenValidation.rows[0].id])
+    } catch (error) {
+        return res.status(401).send()
+    }
+    next()
+}
 
 export const signupValidator = async (req, res, next) => {
     const { name, email, password, confirmPassword } = req.body
