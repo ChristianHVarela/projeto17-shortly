@@ -10,8 +10,10 @@ export const userAccessValidation = async (req, res, next) => {
         if (tokenValidation.rowCount === 0){
             return res.status(401).send()    
         }
+        const tokenRow = tokenValidation.rows[0]
         const newDateExpiration = new Date(new Date().getTime() + (30 * 60000))
-        await db.query('UPDATE token_validation SET expiration_date = $1 WHERE id = $2', [newDateExpiration, tokenValidation.rows[0].id])
+        await db.query('UPDATE token_validation SET expiration_date = $1 WHERE id = $2', [newDateExpiration, tokenRow.id])
+        res.locals.token = tokenRow
     } catch (error) {
         return res.status(401).send()
     }
