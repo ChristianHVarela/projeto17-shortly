@@ -66,7 +66,7 @@ export const deleteShorten = async (req, res) => {
 
 export const getRanking = async (req, res) => {
     try {
-        const rankings = await db.query('SELECT s.user_id AS id, u.user_name AS name, count(s) AS linksCount, sum(s."visitCount") AS "visitCount" FROM shorten s JOIN users u ON u.id = s.user_id GROUP BY s.user_id, u.id ORDER BY visitCount DESC LIMIT 10')
+        const rankings = await db.query('SELECT s.user_id AS id, u.user_name AS name, count(s) AS linksCount, sum(s."visitCount") AS "visitCount" FROM shorten s JOIN users u ON u.id = s.user_id GROUP BY s.user_id, u.id ORDER BY "visitCount" DESC LIMIT 10')
         return res.send(rankings.rows)
     } catch (error) {
         console.log(error);
@@ -79,7 +79,7 @@ export const getUrlsInUser = async (req, res) => {
         const userInfo = await db.query('SELECT u.id AS id, u.user_name AS name, SUM(s."visitCount") AS "visitCount" FROM shorten s JOIN users u ON u.id = s.user_id WHERE u.id = $1 GROUP BY s.user_id, u.id', [user_id])
         const shortsUrl = await db.query('SELECT id, "shortUrl", url, "visitCount" FROM shorten WHERE user_id = $1 ORDER BY id ASC', [user_id])
         const newReturn = {...userInfo.rows[0], shortenedUrls: shortsUrl.rows}
-        return res.send(newReturn)
+        return res.status(200).send(newReturn)
     } catch (error) {
         console.log(error);
     }
