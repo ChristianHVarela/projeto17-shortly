@@ -6,7 +6,7 @@ export const userAccessValidation = async (req, res, next) => {
     let token;
     try {
         token = authorization.replace('Bearer ', '')
-        const tokenValidation = await db.query('SELECT * FROM token_validation WHERE token LIKE $1 AND expiration_date > now()', [token])
+        const tokenValidation = await db.query('SELECT * FROM token_validation WHERE token LIKE $1', [token])
         if (tokenValidation.rowCount === 0){
             return res.status(401).send()    
         }
